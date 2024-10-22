@@ -1,0 +1,37 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+    <br>
+    <li><a href="{% url 'friends_add' %}">Add New Friends</a></li>
+    <br>
+<h2>Pending Friend Requests</h2>
+<ul>
+    {% for request in friends.pending_requests %}
+        <li>
+            {{ request.user.email }}
+            <form method="post" action="{% url 'friend_update' request.pk %}">
+                {% csrf_token %}
+                <button type="submit" name="action" value="accept">Accept</button>
+                <button type="submit" name="action" value="block">Block</button>
+            </form>
+        </li>
+    {% empty %}
+        <p>No pending requests.</p>
+    {% endfor %}
+</ul>
+
+<h2>Your Friends</h2>
+<ul>
+    {% for friend in friends.accepted_friends %}
+        <li>
+            {{ friend.friend.email }}
+            <form method="post" action="{% url 'friend_update' friend.pk %}">
+                {% csrf_token %}
+                <button type="submit" name="action" value="block">Block</button>
+            </form>
+        </li>
+    {% empty %}
+        <p>No friends yet.</p>
+    {% endfor %}
+</ul>
+{% endblock %}
